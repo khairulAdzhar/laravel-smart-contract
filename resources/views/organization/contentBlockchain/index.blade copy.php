@@ -31,6 +31,47 @@
             }
         }
     </style>
+    <style>
+        .dots span {
+            display: inline-block;
+            animation: bounce 0.6s infinite ease-in-out;
+        }
+
+        .dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dots span:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .dots span:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+
+        .dots span:nth-child(4) {
+            animation-delay: 0.12s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                /* Posisi awal dan akhir */
+            }
+
+            50% {
+                transform: translateY(-5px);
+                /* Gerakan ke atas lebih pendek */
+            }
+        }
+    </style>
+    <style>
+        .break-all {
+            word-break: break-all;
+        }
+    </style>
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -74,10 +115,24 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="card custom-card">
-                        <div class="card-header">
-                            <div class="card-title">List of Smart Contract Content</div>
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="card-title">List Transaction Smart Contract Content</div>
+                            <button id="connectMetamaskBtn"
+                                class="btn btn-dark text-light fw-bold d-flex align-items-center">
+                                <img src="{{ asset('assets/images/metamask.png') }}" alt=""
+                                    style="width: 30px; margin-right: 8px;">
+                                Connect to MetaMask
+                            </button>
                         </div>
                         <div class="card-body">
+                            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-3">
+                                <span id="usertext" class="text-muted me-sm-2" style="">MetaMask
+                                    Status:</span>
+                                <!-- Awalnya warna merah -->
+                                <span id="userAddress" class="fw-bold text-break" style="white-space: normal; color: red;">
+                                    None
+                                </span>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover text-nowrap w-100 data-table">
                                     <thead class="table-borderless">
@@ -88,6 +143,7 @@
                                             <th scope="col">Transaction Hash</th>
                                             <th scope="col">BlockChain ID</th>
                                             <th scope="col">log</th>
+                                            <th scope="col">Block No</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Deploy</th>
                                         </tr>
@@ -285,42 +341,46 @@
         </div>
 
         <!-- Modal Deploy Confirmation -->
-        <form class="deploy-form" data-id="{{ $data->id }}" action="{{ route('deploySmartContract', $data->id) }}"
-            method="post">
-            @csrf
-            <div class="modal fade bg-light" id="confirm-{{ $data->id }}" aria-labelledby="exampleModalToggleLabel2"
-                tabindex="-1" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content shadow-lg p-1">
-                        <div class="modal-header ">
-                            <h6 class="modal-title" id="exampleModalToggleLabel">Confirm Deployment</h6>
-                            <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p class="text-primary small">
-                            <p><span class="fw-bold">Content Name:</span> {{ $data->name }}</p>
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            Reminder: Once deployed, the smart contract will be securely stored on the <span
-                                class="text-dark fw-bold">Blockchain Network</span> and cannot be <span
-                                class="text-danger fw-bold">changed</span> or <span
-                                class="text-danger fw-bold">removed</span>. Please verify all details carefully
-                            before proceeding.
-                            </p>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger px-"
-                                data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary px-4 deploy-button">
-                                <i class="bi bi-check-circle-fill me-1"></i> Deploy
-                            </button>
-                        </div>
+        <div class="modal fade bg-light" id="confirm-{{ $data->id }}" aria-labelledby="exampleModalToggleLabel2"
+            tabindex="-1" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg p-1">
+                    <div class="modal-header ">
+                        <h6 class="modal-title" id="exampleModalToggleLabel">Confirm Deployment</h6>
+                        <button type="button" id="xCancel" class="btn-close btn-close-dark" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-primary small">
+                        <p><span class="fw-bold">Content Name:</span> {{ $data->name }}</p>
+                        <i class="bi bi-shield-lock-fill text-danger"></i>
+                        Reminder: Once deployed, the smart contract will be securely stored on the <span
+                            class="text-dark fw-bold">Blockchain Network</span> and cannot be <span
+                            class="text-danger fw-bold">changed</span> or <span
+                            class="text-danger fw-bold">removed</span>. Please verify all details carefully
+                        before proceeding.
+                        </p>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-danger px-4" data-bs-dismiss="modal"
+                            id="cancelBtnC">Cancel</button>
+                        <button id="" class="add-content-btn btn btn-primary px-4 deploy-button"
+                            data-content-id="{{ $data->id }}" data-content-name="{{ $data->name }}"
+                            data-content-created-at="{{ $data->created_at }}" data-content-link="{{ $data->link }}"
+                            data-content-enrollment-price="{{ $data->enrollment_price }}"
+                            data-content-place="{{ $data->place }}" data-content-type="{{ $data->type }}"
+                            data-content-privoder="xBug" data-content-organization-name="{{ $data->organization_name }}"
+                            data-content-username="{{ Auth::user()->name }}">
+                            <i class="bi bi-check-circle-fill me-1"></i> Sign
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     @endforeach
     <!-- CSRF Token Setup -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -357,6 +417,7 @@
                     {
                         data: 'tx_hash',
                         name: 'tx_hash',
+
                     },
                     {
                         data: 'blockchain_id',
@@ -373,7 +434,7 @@
                                 .smart_contract_status_contract == 0) {
                                 return `
                             <button class="btn btn-sm btn-primary view-logs-btn" data-id="${row.smart_contract_id}">
-                                <i class="bi bi-eye"></i> View Logs
+                                <i class="bi bi-eye"></i> View
                             </button>
                         `;
 
@@ -381,6 +442,10 @@
                                 return '-';
                             }
                         }
+                    },
+                    {
+                        data: 'block_id',
+                        name: 'block_id'
                     },
                     {
                         data: 'status',
@@ -391,94 +456,42 @@
                         name: 'action',
                     }
                 ],
-            });
-            // Flag to track AJAX request status
-            var isRequestInProgress = false;
-
-            // Polling: Reload DataTable every 117 seconds
-            setInterval(function() {
-                if (!isRequestInProgress) {
-                    table.ajax.reload(null, false); // false to retain pagination
-                }
-            }, 8000); // 117000 milliseconds = 117 seconds
-
-            // Handle "Deploy" form submission via AJAX
-            $(document).on('submit', '.deploy-form', function(e) {
-                e.preventDefault(); // Prevent default form submission
-
-                // Check if a request is already in progress
-                if (isRequestInProgress) {
-                    return; // Do not proceed if a request is in progress
-                }
-
-                var form = $(this);
-                var formData = form.serialize(); // Serialize form data
-
-                // Show loading status
-                var deployButton = form.find('.deploy-button');
-                deployButton.prop('disabled', true);
-                deployButton.html(
-                    '<i class="bi bi-spinner-border text-white me-2" role="status"></i> Deploying...');
-
-                // Mark request as in progress
-                isRequestInProgress = true;
-
-                // Send AJAX request
-                $.ajax({
-                    url: form.attr('action'),
-                    method: form.attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        // Close the modal
-                        var modalId = form.data('id');
-                        $('#confirm-' + modalId).modal('hide');
-
-                        // Show success alert
-                        toastr.success(response.message, null, {
-                            timeOut: 7000
-                        });
-
-                        // Reload the DataTable immediately after success
-                        table.ajax.reload(null, false); // Reload without resetting pagination
-                    },
-                    error: function(xhr, status, error) {
-                        // Close the modal
-                        var modalId = form.data('id');
-                        $('#confirm-' + modalId).modal('hide');
-
-                        if (status == 401 && xhr.responseJSON && xhr.responseJSON.message) {
-                            toastr.error(xhr.responseJSON.message, null, {
-                                timeOut: 7000
-                            });
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        text: 'Copy Data',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
                         }
-
-                        // Show error alert
-                        if (xhr.responseJSON && xhr.responseJSON.error) {
-                            toastr.error(xhr.responseJSON.error, null, {
-                                timeOut: 7000
-                            });
-                        } else {
-                            toastr.error(
-                                'An error occurred while deploying the smart contract.',
-                                null, {
-                                    timeOut: 7000
-                                });
-                        }
-                        table.ajax.reload(null, false);
                     },
-                    complete: function() {
-                        // Reset the Deploy button
-                        deployButton.prop('disabled', false);
-                        deployButton.html(
-                            '<i class="bi bi-check-circle-fill me-1"></i> Deploy');
-
-                        // Mark request as completed
-                        isRequestInProgress = false;
+                    {
+                        extend: 'csv',
+                        text: 'Export CSV',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Export Excel',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print Data',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
                     }
-                });
+                ],
+                language: {
+                    emptyTable: "No logs available"
+                }
             });
+            let provider, signer, userAccount = null;
 
-            // Handle "View Logs" button click
             $(document).on('click', '.view-logs-btn', function() {
                 var smartContractId = $(this).data('id');
 
@@ -503,18 +516,21 @@
                             response.logs.forEach(function(log) {
                                 // Format the timestamp
                                 var date = new Date(log.created_at);
-                                var options = {
-                                    year: 'numeric',
+
+                                // Buat tiga variabel
+                                var dayMonth = date.toLocaleDateString('en-US', {
                                     month: 'long',
-                                    day: 'numeric',
+                                    day: 'numeric'
+                                });
+                                var yearPart = date.toLocaleDateString('en-US', {
+                                    year: 'numeric'
+                                });
+                                var timePart = date.toLocaleTimeString('en-US', {
+                                    hour12: true,
                                     hour: '2-digit',
                                     minute: '2-digit',
-                                    second: '2-digit',
-                                    hour12: true
-                                };
-                                var formattedDate = date.toLocaleDateString('en-US',
-                                    options);
-
+                                    second: '2-digit'
+                                });
                                 // Determine log type for styling
                                 var logType = 'INFO';
                                 var logBadgeClass = 'p-2 bg-primary';
@@ -532,6 +548,18 @@
                                     logBadgeClass = 'p-2 bg-success';
                                     var text_class = 'text-success';
                                 }
+                                var options = {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                    hour12: true
+                                };
+                                var formattedDate = date.toLocaleDateString('en-US',
+                                    options);
+
 
                                 // Remove the log type prefix from the message
                                 var logMessage = log.log_message.replace(/^\[.*?\]\s*/,
@@ -541,8 +569,9 @@
                                 $('#log-content').append(`
                                     <li class="mt-0">
                                         <div class="timeline-time text-end">
-                                            <span class="date text-dark fs-12">${formattedDate.split(',')[0]}</span>
-                                            <span class="time d-inline-block text-dark fs-12 fw-bold">${formattedDate.split(',')[1]}</span>
+                                            <span class="date text-dark fs-12 me-2">${dayMonth}</span><br/>
+                                            <span class="time d-inline-block text-dark fs-12 fw-bold">${yearPart} at</span><br/>
+                                            <span class="time d-inline-block text-dark fs-12 fw-bold">${timePart}</span>
                                         </div>
                                         <div class="timeline-icon">
                                             <a href="javascript:void(0);"></a>
@@ -602,6 +631,526 @@
                         $('#log-content').show();
                     }
                 });
+            });
+
+            $('#connectMetamaskBtn').on('click', async () => {
+                if (typeof window.ethereum === 'undefined') {
+                    Swal.fire({
+                        title: 'MetaMask not found!',
+                        html: `MetaMask not found! Please install extension.`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                try {
+                    const accounts = await window.ethereum.request({
+                        method: 'eth_requestAccounts'
+                    });
+                    userAccount = accounts[0];
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+
+                    $('#userAddress')
+                        .text(`Connected: ${userAccount}`)
+                        .css('color', 'green');
+                    toastr.success('Connected to MetaMask!');
+                } catch (error) {
+                    console.error(error);
+                    toastr.error('Failed to connect MetaMask!');
+                }
+            });
+
+
+            // Misal, diasumsikan variable "table" dan "userAccount" sudah didefinisikan di tempat lain
+            // (karena tampak dari code snippet Anda, "table" dan "userAccount" sudah ada).
+            $(document).on('click', '.add-content-btn', async function() {
+                if (!signer) {
+                    Swal.fire({
+                        title: 'MetaMask Not Connected!',
+                        html: `Please connect MetaMask first by clicking "Connect to MetaMask" button at upper right datatable`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    var modalId = '#confirm-' + $(this).data('content-id');
+                    $(modalId).modal('hide');
+                    return;
+                }
+                var xCancel = $('#xCancel');
+                xCancel.prop('disabled', true);
+
+                var cancelBtnC = $('#cancelBtnC');
+                cancelBtnC.prop('disabled', true);
+
+                var deployButton = $('.deploy-button');
+                deployButton.prop('disabled', true);
+                deployButton.html(
+                    '<i class="bi bi-spinner-border text-white me-2" role="status"></i> Signing<span class="dots"> <span>.</span><span>.</span><span>.</span><span>.</span></span>'
+                );
+                // 1) Siapkan array logs
+                let logs = [];
+
+                function addLog(message) {
+                    // Setiap kali dipanggil, tambahkan object { message: "...", ... } ke array
+                    logs.push({
+                        message
+                    });
+                    console.log("[LOG]", message); // boleh tampilkan di console
+                }
+
+                // 2) Ambil data dari attribute HTML
+                const contentId = $(this).data('content-id') || 'none';
+                const _name = $(this).data('content-name') || 'none';
+                const _createdAt = $(this).data('content-created-at') || 'none';
+                const _link = $(this).data('content-link') || 'none';
+                const _enrollmentPrice = $(this).data('content-enrollment-price') || 'none';
+                const _place = $(this).data('content-place') || 'none';
+                const _contentType = $(this).data('content-type') || 'none';
+                const _provider = $(this).data('content-privoder') || 'none';
+                const _organizationName = $(this).data('content-organization-name') || 'none';
+                const _userName = $(this).data('content-username') || 'none';
+
+                const contentData = {
+                    contentId: contentId,
+                    name: _name,
+                    createdAt: _createdAt,
+                    link: _link,
+                    enrollmentPrice: _enrollmentPrice,
+                    place: _place,
+                    contentType: _contentType,
+                    provider: _provider,
+                    organizationName: _organizationName,
+                    userName: _userName
+                };
+
+                // Menampilkan objek JSON di console
+                console.log(JSON.stringify(contentData, null, 4));
+
+                try {
+                    addLog("[INFO] Deployment Blockchain process started...");
+
+                    // 3) Kontrak Address & ABI
+                    const CONTRACT_ADDRESS = "0x5faC1Aa6AF8e5d510cb6D971E87F0a2C57C2E992";
+                    const contractABI = [{
+                            "anonymous": false,
+                            "inputs": [{
+                                    "indexed": false,
+                                    "internalType": "uint256",
+                                    "name": "id",
+                                    "type": "uint256"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "address",
+                                    "name": "user",
+                                    "type": "address"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "createdAt",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "link",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "enrollmentPrice",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "place",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "contentType",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "provider",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "organizationName",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "userName",
+                                    "type": "string"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "uint256",
+                                    "name": "timestamp",
+                                    "type": "uint256"
+                                }
+                            ],
+                            "name": "ContentAdded",
+                            "type": "event"
+                        },
+                        {
+                            "inputs": [{
+                                    "internalType": "string",
+                                    "name": "_name",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_createdAt",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_link",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_enrollmentPrice",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_place",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_contentType",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_provider",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_organizationName",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "_userName",
+                                    "type": "string"
+                                }
+                            ],
+                            "name": "addContent",
+                            "outputs": [],
+                            "stateMutability": "nonpayable",
+                            "type": "function"
+                        },
+                        {
+                            "inputs": [],
+                            "name": "contentCount",
+                            "outputs": [{
+                                "internalType": "uint256",
+                                "name": "",
+                                "type": "uint256"
+                            }],
+                            "stateMutability": "view",
+                            "type": "function"
+                        },
+                        {
+                            "inputs": [{
+                                "internalType": "uint256",
+                                "name": "",
+                                "type": "uint256"
+                            }],
+                            "name": "contents",
+                            "outputs": [{
+                                    "internalType": "uint256",
+                                    "name": "id",
+                                    "type": "uint256"
+                                },
+                                {
+                                    "internalType": "address",
+                                    "name": "user",
+                                    "type": "address"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "createdAt",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "link",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "enrollmentPrice",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "place",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "contentType",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "provider",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "organizationName",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "string",
+                                    "name": "userName",
+                                    "type": "string"
+                                },
+                                {
+                                    "internalType": "uint256",
+                                    "name": "timestamp",
+                                    "type": "uint256"
+                                }
+                            ],
+                            "stateMutability": "view",
+                            "type": "function"
+                        },
+                        {
+                            "inputs": [{
+                                "internalType": "uint256",
+                                "name": "_id",
+                                "type": "uint256"
+                            }],
+                            "name": "getContent",
+                            "outputs": [{
+                                "components": [{
+                                        "internalType": "uint256",
+                                        "name": "id",
+                                        "type": "uint256"
+                                    },
+                                    {
+                                        "internalType": "address",
+                                        "name": "user",
+                                        "type": "address"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "name",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "createdAt",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "link",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "enrollmentPrice",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "place",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "contentType",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "provider",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "organizationName",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "userName",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "uint256",
+                                        "name": "timestamp",
+                                        "type": "uint256"
+                                    }
+                                ],
+                                "internalType": "struct ContentVerification.Content",
+                                "name": "",
+                                "type": "tuple"
+                            }],
+                            "stateMutability": "view",
+                            "type": "function"
+                        }
+                    ];
+                    addLog(
+                        `[INFO] Contract ABI loaded successfully. Preparing contract instance at address: ${CONTRACT_ADDRESS}.`
+                    );
+                    addLog("[INFO] Initializing contract instance...");
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+
+                    toastr.info('Sending transaction... Please confirm in MetaMask.');
+                    addLog("[INFO] Calling contract.addContent() with user data.");
+
+                    // 4) Kirim transaksi
+                    const tx = await contract.addContent(
+                        _name,
+                        _createdAt,
+                        _link,
+                        _enrollmentPrice,
+                        _place,
+                        _contentType,
+                        _provider,
+                        _organizationName,
+                        _userName
+                    );
+                    addLog("[INFO] Transaction broadcasted. Waiting for mining...");
+
+                    // 5) Tunggu konfirmasi (receipt)
+                    const receipt = await tx.wait();
+                    addLog(
+                        `[INFO] Transaction confirmed! TxHash: ${receipt.transactionHash}, Block#: ${receipt.blockNumber}`
+                    );
+
+                    // 6) Cek event ContentAdded
+                    const eventSignature =
+                        "ContentAdded(uint256,address,string,string,string,string,string,string,string,string,string,uint256)";
+                    const contentAddedLog = receipt.logs.find(
+                        (log) => log.topics[0] === ethers.utils.id(eventSignature)
+                    );
+                    addLog(`[INFO] Signature of ContentAdded event detected: ${eventSignature}`);
+
+                    let block_id = null;
+                    if (contentAddedLog) {
+                        const decodedLog = contract.interface.parseLog(contentAddedLog);
+                        block_id = decodedLog.args.id.toString();
+                        addLog(`[DEBUG] ContentAdded event detected. block_id=${block_id}`);
+                    } else {
+                        addLog("[DEBUG] No ContentAdded event found in logs.");
+                    }
+
+                    toastr.success('Content added to Blockchain!');
+
+                    // 7) Kirim data + logs ke server
+                    const txHash = receipt.transactionHash;
+                    const blockNumber = receipt.blockNumber;
+
+                    addLog(
+                        `[INFO] Transaction hash successfully stored in Blockchain network with tx_hash: ${txHash}, block_number: ${blockNumber}.`
+                    );
+                    addLog(
+                        `[SUCCESS] Deployment blockchain process completed successfully for user account ${userAccount}.`
+                    );
+                    const response = await fetch('{{ route('saveDeployedData') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify({
+                            content_id: contentId,
+                            user_id: '{{ Auth::user()->id }}',
+                            user_metamask_address: userAccount,
+                            tx_hash: txHash,
+                            block_no: blockNumber,
+                            contract_address: CONTRACT_ADDRESS,
+                            provider: 'xBug',
+                            status_contract: 1,
+                            tx_id: block_id,
+                            content_name: _name,
+                            // Kirim logs ke server
+                            logs: JSON.stringify(logs)
+                        })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        toastr.success(result.message || 'Contract data saved!');
+                        table.ajax.reload(null, false);
+                    } else {
+                        toastr.error('Failed to save data/logs to server.');
+                    }
+
+                    Swal.fire({
+                        title: 'Content Added To Blockchain!',
+                        html: `TxHash: <strong>${txHash}</strong><br>Block#: <strong>${blockNumber}</strong>`,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    var modalId = '#confirm-' + $(this).data('content-id');
+                    $(modalId).modal('hide');
+
+                    var xCancel = $('#xCancel');
+                    xCancel.prop('disabled', false);
+
+                    var cancelBtnC = $('#cancelBtnC');
+                    cancelBtnC.prop('disabled', false);
+
+                    var deployButton = $('.deploy-button');
+                    deployButton.prop('disabled', false);
+                    deployButton.html(
+                        '<i class="bi bi-check-circle-fill me-1"></i> Sign'
+                    );
+
+                } catch (err) {
+                    toastr.error('Add Content failed!');
+                    Swal.fire({
+                        title: 'Error',
+                        html: `Transaction failed or declined`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    var modalId = '#confirm-' + $(this).data('content-id');
+                    $(modalId).modal('hide');
+                    var xCancel = $('#xCancel');
+                    xCancel.prop('disabled', false);
+
+                    var cancelBtnC = $('#cancelBtnC');
+                    cancelBtnC.prop('disabled', false);
+
+                    var deployButton = $('.deploy-button');
+                    deployButton.prop('disabled', false);
+                    deployButton.html(
+                        '<i class="bi bi-check-circle-fill me-1"></i> Sign'
+                    );
+                }
             });
 
             // Optional: Initialize toastr for notifications

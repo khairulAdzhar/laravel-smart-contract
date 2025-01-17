@@ -20,8 +20,6 @@ use Illuminate\Support\Facades\Route;
 //      ->name('showContentBlockchainOrg');
 
 // Simpan data setelah panggilan addContent berhasil
-Route::post('/smart-contract/save-deployed', [SmartContractController::class, 'saveDeployedData'])
-     ->name('saveDeployedData');
 
 
 
@@ -33,7 +31,8 @@ Route::get('/smart-contract-redirect', [OrganizationRouteController::class, 'red
 
 Route::prefix('protected')->middleware(['auth','custom.auth'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
-    
+    Route::post('/smart-contract/save-deployed', [SmartContractController::class, 'saveDeployedData'])
+     ->name('saveDeployedData');
     Route::get('/view-content-blockchain', [SmartContractController::class, 'showContentBlockchainOrg'])->name('showContentBlockchainOrg');
     Route::post('/deploy-smart-contract/{id}', [SmartContractController::class, 'deploySmartContract'])->name('deploySmartContract');
     Route::get('/view-content-blockchain-logs', [SmartContractController::class, 'showContentBlockchainlogsOrg'])->name('showContentBlockchainlogsOrg');

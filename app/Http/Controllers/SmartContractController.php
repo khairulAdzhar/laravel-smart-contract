@@ -97,14 +97,14 @@ class SmartContractController extends Controller
             // Add 'tx_hash' column
             $table->addColumn('tx_hash', function ($row) {
                 if ($row->smart_contract_status_contract === 1) {
-                    $shortenedTxHash = strlen($row->smart_contract_tx_hash) > 15
-                        ? substr($row->smart_contract_tx_hash, 0, 18) . '...'
-                        : $row->smart_contract_tx_hash;
+                    // $shortenedTxHash = strlen($row->smart_contract_tx_hash) > 15
+                    //     ? substr($row->smart_contract_tx_hash, 0, 18) . '...'
+                    //     : $row->smart_contract_tx_hash;
 
                     $button = '
                     <div class="d-flex align-items-center">
-                        <span class="p-2 fw-bold">
-                            ' . $shortenedTxHash . '
+                        <span class="p-2 fw-bold break-all">
+                            ' . $row->smart_contract_tx_hash . '
                         </span>
                         <button class="btn btn-light btn-sm ms-1 copy-btn" data-copy="' . $row->smart_contract_tx_hash . '" title="Copy to clipboard">
                             <i class="bi bi-clipboard"></i>
@@ -143,6 +143,12 @@ class SmartContractController extends Controller
                     <button class="btn btn-light btn-sm ms-1 copy-btn" data-copy="' . $row->smart_contract_block_no . '">
                         <i class="bi bi-clipboard"></i>
                     </button>
+                    <a href="https://sepolia.etherscan.io/block/' . $row->smart_contract_block_no . '"
+                           target="_blank"
+                           class="text-dark text-decoration-none fw-bold ms-1 bg-light btn btn-sm"
+                           title="View on Etherscan">
+                           <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
                     <script>
                         document.querySelectorAll(".copy-btn").forEach(button => {
                             button.addEventListener("click", () => {
@@ -287,11 +293,34 @@ class SmartContractController extends Controller
             // Contoh: asumsikan user_id = 1 (atau Anda bisa cari userId dari Auth)
             $userId =  Auth::user()->id;
 
-            // Simpan di DB
-            $smartContractId = DB::table('smart_contract')->insertGetId(
-                [
+            // Cek apakah ada data dengan content_id
+            $existingSmartContract = DB::table('smart_contract')
+                ->where('content_id', $validated['content_id'])
+                ->first();
+
+            if ($existingSmartContract) {
+                // Jika ada, lakukan update
+                DB::table('smart_contract')
+                    ->where('id', $existingSmartContract->id)
+                    ->update([
+                        'user_id'         => $userId,
+                        'provider'        => $validated['provider'] ?? 'xBug',
+                        'tx_hash'         => $validated['tx_hash'],
+                        'block_no'        => $validated['block_no'] ?? '',
+                        'address'         => $request->input('user_metamask_address') ?? '',
+                        'tx_id'           => $validated['tx_id'],
+                        'contract_address' => $validated['contract_address'],
+                        'status_contract' => $validated['status_contract'] ?? 1,
+                        'updated_at'      => now(),
+                    ]);
+
+                // Dapatkan ID
+                $smartContractId = $existingSmartContract->id;
+            } else {
+                // Jika tidak ada, lakukan insert dan dapatkan ID
+                $smartContractId = DB::table('smart_contract')->insertGetId([
                     'user_id'         => $userId,
-                    'content_id' => $validated['content_id'],
+                    'content_id'      => $validated['content_id'],
                     'provider'        => $validated['provider'] ?? 'xBug',
                     'tx_hash'         => $validated['tx_hash'],
                     'block_no'        => $validated['block_no'] ?? '',
@@ -301,13 +330,13 @@ class SmartContractController extends Controller
                     'status_contract' => $validated['status_contract'] ?? 1,
                     'updated_at'      => now(),
                     'created_at'      => now(),
-                ]
-            );
+                ]);
+            }
 
-            // 2) Simpan logs ke 'smart_contract_logs'
+            // Proses logs
             $logsString = $request->input('logs'); // JSON string
             if ($logsString) {
-                $logsArray = json_decode($logsString, true); // decode to array
+                $logsArray = json_decode($logsString, true); // Decode to array
                 if (is_array($logsArray)) {
                     // Loop each log
                     foreach ($logsArray as $logEntry) {
@@ -316,13 +345,11 @@ class SmartContractController extends Controller
                         DB::table('smart_contract_logs')->insert([
                             'smart_contract_id' => $smartContractId,
                             'log_message'       => $logMessage,
-                            'created_at'        => now()
+                            'created_at'        => now(),
                         ]);
                     }
                 }
             }
-
-
 
             $email_status = DB::table('email_status')->where('email', 'blockchain@xbug.online')->first();
             if ($email_status && $email_status->status == 1) {
@@ -338,7 +365,7 @@ class SmartContractController extends Controller
                     'from_email' => 'blockchain@xbug.online',
                     'name' => Auth::user()->name,
                     'status' => 'SUCCESS',
-                    'response_data' => 'MESSAGE SUCCESS SEND',
+                    'response_data' => 'MESSAGE SUCCESS SEND: TRANSACTION HASH - '.$validated['tx_hash'],
                     'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 ];

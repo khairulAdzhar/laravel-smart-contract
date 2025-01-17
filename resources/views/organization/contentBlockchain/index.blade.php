@@ -67,6 +67,11 @@
             }
         }
     </style>
+    <style>
+        .break-all {
+            word-break: break-all;
+        }
+    </style>
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -138,6 +143,7 @@
                                             <th scope="col">Transaction Hash</th>
                                             <th scope="col">BlockChain ID</th>
                                             <th scope="col">log</th>
+                                            <th scope="col">Block No</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Deploy</th>
                                         </tr>
@@ -356,8 +362,8 @@
                         </p>
                     </div>
                     <div class="modal-footer d-flex justify-content-end">
-                        <button type="button" class="btn btn-outline-danger px-4"
-                            data-bs-dismiss="modal" id="cancelBtnC">Cancel</button>
+                        <button type="button" class="btn btn-outline-danger px-4" data-bs-dismiss="modal"
+                            id="cancelBtnC">Cancel</button>
                         <button id="" class="add-content-btn btn btn-primary px-4 deploy-button"
                             data-content-id="{{ $data->id }}" data-content-name="{{ $data->name }}"
                             data-content-created-at="{{ $data->created_at }}" data-content-link="{{ $data->link }}"
@@ -411,6 +417,7 @@
                     {
                         data: 'tx_hash',
                         name: 'tx_hash',
+
                     },
                     {
                         data: 'blockchain_id',
@@ -427,7 +434,7 @@
                                 .smart_contract_status_contract == 0) {
                                 return `
                             <button class="btn btn-sm btn-primary view-logs-btn" data-id="${row.smart_contract_id}">
-                                <i class="bi bi-eye"></i> View Logs
+                                <i class="bi bi-eye"></i> View
                             </button>
                         `;
 
@@ -435,6 +442,10 @@
                                 return '-';
                             }
                         }
+                    },
+                    {
+                        data: 'block_id',
+                        name: 'block_id'
                     },
                     {
                         data: 'status',
@@ -445,10 +456,42 @@
                         name: 'action',
                     }
                 ],
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        text: 'Copy Data',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'Export CSV',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Export Excel',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print Data',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(7))'
+                        }
+                    }
+                ],
+                language: {
+                    emptyTable: "No logs available"
+                }
             });
+            let provider, signer, userAccount = null;
 
-
-            // Handle "View Logs" button click
             $(document).on('click', '.view-logs-btn', function() {
                 var smartContractId = $(this).data('id');
 
@@ -1074,6 +1117,18 @@
                     var modalId = '#confirm-' + $(this).data('content-id');
                     $(modalId).modal('hide');
 
+                    var xCancel = $('#xCancel');
+                    xCancel.prop('disabled', false);
+
+                    var cancelBtnC = $('#cancelBtnC');
+                    cancelBtnC.prop('disabled', false);
+
+                    var deployButton = $('.deploy-button');
+                    deployButton.prop('disabled', false);
+                    deployButton.html(
+                        '<i class="bi bi-check-circle-fill me-1"></i> Sign'
+                    );
+
                 } catch (err) {
                     toastr.error('Add Content failed!');
                     Swal.fire({
@@ -1084,6 +1139,17 @@
                     });
                     var modalId = '#confirm-' + $(this).data('content-id');
                     $(modalId).modal('hide');
+                    var xCancel = $('#xCancel');
+                    xCancel.prop('disabled', false);
+
+                    var cancelBtnC = $('#cancelBtnC');
+                    cancelBtnC.prop('disabled', false);
+
+                    var deployButton = $('.deploy-button');
+                    deployButton.prop('disabled', false);
+                    deployButton.html(
+                        '<i class="bi bi-check-circle-fill me-1"></i> Sign'
+                    );
                 }
             });
 
