@@ -18,7 +18,7 @@ class RedirectIfNotAuthenticated
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect('google.com');
+            return redirect('http://localhost:8000/login');
         }
 
         if (Auth::user()->is_gpt === 0) {
