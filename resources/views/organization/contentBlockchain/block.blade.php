@@ -200,7 +200,7 @@
                                                 verified, you will redirect to the xBug Blockchain App in
                                             </p>
                                             </p>
-                                            <span id="countdown" class="countdown">6</span>
+                                            <span id="countdown" class="countdown">5</span>
                                             <span>seconds</span>
                                             <br>
                                         </div>
@@ -247,12 +247,12 @@
                 if (isRedirect) {
                     startCountdown();
                 }
-            }, 7000);
+            }, 5000);
         });
 
         // Countdown 5 detik jika isRedirect true
         function startCountdown() {
-            let countdownNumber = 6;
+            let countdownNumber = 5;
             const countdownElement = document.getElementById("countdown");
             const redirectNowBtn = document.getElementById("redirectNowBtn");
 
