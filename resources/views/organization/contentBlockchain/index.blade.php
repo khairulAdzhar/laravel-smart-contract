@@ -1,6 +1,6 @@
 @extends('organization.layouts.main')
 @section('container')
-@vite(['resources/js/walletconnect.js', 'resources/css/app.css'])
+    @vite(['resources/js/walletconnect.js', 'resources/css/app.css'])
     <style>
         .wrap-text {
             white-space: normal !important;
@@ -116,24 +116,25 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="card custom-card">
-                        <div class="card-header d-flex align-items-center justify-content-between">
-                            <!-- Grup Tombol di Kiri -->
-                            <div class="card-title">List Transaction Smart Contract Content</div>
-                            <div class="d-flex align-items-center">
-                                <appkit-button class="btn btn-dark btn-sm"></appkit-button>
+                        <div class="card-header d-flex flex-column flex-sm-row align-items-center justify-content-between">
+                            <!-- Judul Kartu di Kiri -->
+                            <div class="card-title mb-2 mb-sm-0">List Transaction Smart Contract Content</div>
+
+                            <!-- Grup Tombol di Kanan -->
+                            <div class="d-flex flex-wrap align-items-center">
+                                <appkit-network-button class="btn btn-dark btn-sm me-2 mb-2"></appkit-network-button>
+                                <appkit-button class="btn btn-dark btn-sm me-2 mb-2"></appkit-button>
                                 <button id="connectMetamaskBtn"
-                                    class="btn btn-dark ms-2 text-light fw-bold d-flex align-items-center me-2 py-2">
+                                    class="btn btn-dark text-light fw-bold d-flex align-items-center me-2 mb-2 py-2" style="height: 49px">
                                     <img src="{{ asset('assets/images/metamask.png') }}" alt=""
-                                        style="width: 30px; margin-right: 8px;">
+                                        style="width: 24px; margin-right: 8px;">
                                     Connect to MetaMask
                                 </button>
-                               
                             </div>
-                        
-                            <!-- Judul Kartu di Kanan -->
-                           
                         </div>
-                        
+
+
+
                         <div class="card-body">
                             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-3">
                                 <span id="usertext" class="text-muted me-sm-2" style="">MetaMask
@@ -267,8 +268,8 @@
                         <button type="button" class="btn btn-outline-danger px-4" data-bs-dismiss="modal">
                             Close
                         </button>
-                        <a href="https://sepolia.etherscan.io/inputdatadecoder?tx={{ $data->smart_contract_tx_hash }}" target="_blank"
-                            class="btn btn-primary px-4">
+                        <a href="https://sepolia.etherscan.io/inputdatadecoder?tx={{ $data->smart_contract_tx_hash }}"
+                            target="_blank" class="btn btn-primary px-4">
                             <i class="bi bi-info-circle me-1"></i> Details
                         </a>
                     </div>
