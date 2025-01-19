@@ -43,6 +43,7 @@ class SmartContractController extends Controller
                 'smart_contract.status_contract as smart_contract_status_contract',
                 'smart_contract.contract_verified_at as smart_contract_verfied_at',
                 'smart_contract.created_at as smart_contract_created_at',
+                'smart_contract.updated_at as smart_contract_updated_at',
                 'smart_contract.tx_id as smart_contract_tx_id',
                 'organization.name as organization_name'
             )
@@ -386,7 +387,7 @@ class SmartContractController extends Controller
     }
     public function getLogs($id)
     {
-        // sleep(2);
+        sleep(3);
         // Validate that $id is an integer
         if (!is_numeric($id)) {
             return response()->json(['error' => 'Invalid smart contract ID.'], 400);

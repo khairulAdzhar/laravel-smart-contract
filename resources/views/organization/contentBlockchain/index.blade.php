@@ -197,7 +197,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content shadow-lg p-1">
                     <div class="modal-header">
-                        <h6 class="modal-title" id="successModalLabel">Deployment Detail</h6>
+                        <h6 class="modal-title" id="successModalLabel">Contract Detail</h6>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
@@ -249,7 +249,7 @@
                             </li>
                             <li class="mb-2">
                                 <span class="fw-normal">Deployment Time:</span>
-                                <span>{{ $data->smart_contract_verfied_at }}</span>
+                                <span>{{ $data->smart_contract_updated_at }}</span>
                             </li>
                         </ul>
                     </div>
@@ -257,7 +257,7 @@
                         <button type="button" class="btn btn-outline-danger px-4" data-bs-dismiss="modal">
                             Close
                         </button>
-                        <a href="https://sepolia.etherscan.io/tx/{{ $data->smart_contract_tx_hash }}" target="_blank"
+                        <a href="https://sepolia.etherscan.io/inputdatadecoder?tx={{ $data->smart_contract_tx_hash }}" target="_blank"
                             class="btn btn-primary px-4">
                             <i class="bi bi-info-circle me-1"></i> Details
                         </a>
@@ -280,10 +280,10 @@
                         <p class="mb-2">Please review the details below before confirming the deployment:</p>
                         <div class="border rounded-2 p-3 bg-light">
                             <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
+                                {{-- <li class="mb-2">
                                     <span class="fw-semibold">xBUG Address:</span>
                                     <span class="text-primary transaction-hash">{{ env('ETH_ADRRESS') }}</span>
-                                </li>
+                                </li> --}}
                                 <li class="mb-2">
                                     <span class="fw-semibold">Contract Address:</span>
                                     <span class="text-primary transaction-hash">{{ env('CONTRACT_ADDRESS') }}</span>
@@ -333,7 +333,7 @@
                             data-bs-dismiss="modal">Cancel</button>
                         <button class="btn btn-primary  px-3" data-bs-target="#confirm-{{ $data->id }}"
                             data-bs-toggle="modal">
-                            <i class="bi bi-check-circle-fill me-1"></i> Confirm Deploy
+                            <i class="bi bi-check-circle-fill me-1"></i> Confirm Sign
                         </button>
                     </div>
                 </div>
@@ -346,7 +346,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content shadow-lg p-1">
                     <div class="modal-header ">
-                        <h6 class="modal-title" id="exampleModalToggleLabel">Confirm Deployment</h6>
+                        <h6 class="modal-title" id="exampleModalToggleLabel">Confirm Sign</h6>
                         <button type="button" id="xCancel" class="btn-close btn-close-dark" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
