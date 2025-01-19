@@ -1,6 +1,5 @@
 @extends('organization.layouts.main')
 @section('container')
-@vite(['resources/js/walletconnect.js', 'resources/css/app.css'])
     <style>
         .wrap-text {
             white-space: normal !important;
@@ -117,23 +116,14 @@
                 <div class="col-xl-12">
                     <div class="card custom-card">
                         <div class="card-header d-flex align-items-center justify-content-between">
-                            <!-- Grup Tombol di Kiri -->
                             <div class="card-title">List Transaction Smart Contract Content</div>
-                            <div class="d-flex align-items-center">
-                                <appkit-button class="btn btn-dark btn-sm"></appkit-button>
-                                <button id="connectMetamaskBtn"
-                                    class="btn btn-dark ms-2 text-light fw-bold d-flex align-items-center me-2 py-2">
-                                    <img src="{{ asset('assets/images/metamask.png') }}" alt=""
-                                        style="width: 30px; margin-right: 8px;">
-                                    Connect to MetaMask
-                                </button>
-                               
-                            </div>
-                        
-                            <!-- Judul Kartu di Kanan -->
-                           
+                            <button id="connectMetamaskBtn"
+                                class="btn btn-dark text-light fw-bold d-flex align-items-center">
+                                <img src="{{ asset('assets/images/metamask.png') }}" alt=""
+                                    style="width: 30px; margin-right: 8px;">
+                                Connect to MetaMask
+                            </button>
                         </div>
-                        
                         <div class="card-body">
                             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-3">
                                 <span id="usertext" class="text-muted me-sm-2" style="">MetaMask
