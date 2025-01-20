@@ -7,8 +7,8 @@ const projectId = '3555b62326bd83cf91146427f3a9a340'
 const networks = [arbitrum, mainnet,sepolia]
 
 const metadata = {
-  name: 'My Laravel App',
-  description: 'Laravel WalletConnect Integration',
+  name: 'xBUG WalletConnect',
+  description: 'xBUG WalletConnect Gateway',
   url: 'https://blockchain.xbug.online',
   icons: ['https://xbug.online/assets/images/logo.png']
 }
