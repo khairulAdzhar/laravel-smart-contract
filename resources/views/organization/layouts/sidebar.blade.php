@@ -9,7 +9,8 @@
 
     <!-- Start::main-sidebar -->
     <div class="main-sidebar" id="sidebar-scroll"
-        data-intro="Hi, Welcome to xBUG Blockchain APP Dashboard Panel! This is the main part of your sidebar, containing the navigation menu." data-step="1">
+        data-intro="Hi, Welcome to xBUG Blockchain APP Dashboard Panel! This is the main part of your sidebar, containing the navigation menu."
+        data-step="1">
         <!-- Start::nav -->
         <nav class="main-menu-container nav nav-pills flex-column sub-open">
             <div class="slide-left" id="slide-left">
@@ -33,45 +34,46 @@
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
-                <!-- End::slide (Dashboard) -->
-                <li class="slide__category">
-                    <span class="category-name">WEB</span>
-                </li>
-                <li class="slide has-sub"
-                    data-intro="This menu displays your Smart Contract detail."
-                    data-step="3">
-                    <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class='bx bxs-wallet-alt side-menu__icon'></i>
-                        <span class="side-menu__label">Smart Contract</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <!-- Child Menu Activity -->
-                    <ul class="slide-menu child1">
-                        <li class="slide">
-                            <a href="{{ route('showContentBlockchainOrg') }}" class="side-menu__item">Deploy Smart
-                                Contract</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- End::Content Activity Menu -->
-                <li class="slide__category">
-                    <span class="category-name">LOGGING</span>
-                </li>
-                <li class="slide has-sub"
-                    data-intro="This menu displays your notification we send to you from xBUG."
-                    data-step="4">
-                    <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class='bx bxs-notification side-menu__icon'></i>
-                        <span class="side-menu__label">Notification</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <!-- Child Menu Activity -->
-                    <ul class="slide-menu child1">
-                        <li class="slide">
-                            <a href="{{ route('showNotificationOrg') }}" class="side-menu__item">Your Notifications</a>
-                        </li>
-                    </ul>
-                </li>
+                @if (Auth::user()->ekyc_status === 1)
+                    <!-- End::slide (Dashboard) -->
+                    <li class="slide__category">
+                        <span class="category-name">WEB</span>
+                    </li>
+                    <li class="slide has-sub" data-intro="This menu displays your Smart Contract detail."
+                        data-step="3">
+                        <a href="javascript:void(0);" class="side-menu__item ">
+                            <i class='bx bxs-wallet-alt side-menu__icon'></i>
+                            <span class="side-menu__label">Smart Contract</span>
+                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                        </a>
+                        <!-- Child Menu Activity -->
+                        <ul class="slide-menu child1">
+                            <li class="slide">
+                                <a href="{{ route('showContentBlockchainOrg') }}" class="side-menu__item">Deploy Smart
+                                    Contract</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- End::Content Activity Menu -->
+                    <li class="slide__category">
+                        <span class="category-name">LOGGING</span>
+                    </li>
+                    <li class="slide has-sub"
+                        data-intro="This menu displays your notification we send to you from xBUG." data-step="4">
+                        <a href="javascript:void(0);" class="side-menu__item ">
+                            <i class='bx bxs-notification side-menu__icon'></i>
+                            <span class="side-menu__label">Notification</span>
+                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                        </a>
+                        <!-- Child Menu Activity -->
+                        <ul class="slide-menu child1">
+                            <li class="slide">
+                                <a href="{{ route('showNotificationOrg') }}" class="side-menu__item">Your
+                                    Notifications</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 <!-- End::xBUG Ai Menu -->
 
             </ul>

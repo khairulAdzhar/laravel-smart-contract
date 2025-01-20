@@ -211,71 +211,137 @@
             window.close();
         }
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const tutorialSidebarDoneSC = localStorage.getItem('tutorialSidebarDoneYesSC');
-
-            if (!tutorialSidebarDoneSC) {
-                if (isMobile()) {
-                    openSidebar().then(() => {
+            const tutorialSidebarDone = localStorage.getItem('tutorialSidebarDoneYes');
+            const tutorialSidebarDone1 = localStorage.getItem('tutorialSidebarDone');
+            const ekyc_status = "{{ Auth::user()->ekyc_status }}";
+            if (ekyc_status == 1) {
+                if (!tutorialSidebarDone) {
+                    if (isMobile()) {
+                        openSidebar().then(() => {
+                            startIntro();
+                        });
+                    } else {
                         startIntro();
+                    }
+                }
+
+                function startIntro() {
+                    introJs()
+                        .setOptions({
+                            showProgress: true,
+                            showBullets: true,
+                            exitOnOverlayClick: false,
+                            tooltipPosition: 'auto',
+                            highlightClass: 'introjs-highlight'
+                        })
+                        .onbeforechange(function(targetElement) {
+                            const step = parseInt(targetElement.getAttribute('data-step'), 10);
+                            if (step === 9) {
+                                closeSidebar();
+                                // Optional: Add a slight delay if sidebar has a transition
+                                //setTimeout(() => {}, 900); // Adjust time as needed
+                            }
+                        })
+                        .oncomplete(function() {
+                            localStorage.setItem('tutorialSidebarDoneYes', true);
+                            // Optional: Ensure sidebar remains closed after tutorial
+                            if (isMobile()) {
+                                closeSidebar();
+                            }
+                        })
+                        .onexit(function() {
+                            localStorage.setItem('tutorialSidebarDoneYes', true);
+                            // Optional: Ensure sidebar remains closed if tutorial is skipped
+                            if (isMobile()) {
+                                closeSidebar();
+                            }
+                        })
+                        .start();
+                }
+
+                function isMobile() {
+                    return window.matchMedia("(max-width: 998px)").matches;
+                }
+
+                function openSidebar() {
+                    document.documentElement.setAttribute('data-toggled', 'open');
+                    return new Promise((resolve) => {
+                        // Adjust the timeout duration based on your sidebar's transition time
+                        setTimeout(resolve, 500);
                     });
-                } else {
-                    startIntro();
+                }
+
+                function closeSidebar() {
+                    document.documentElement.setAttribute('data-toggled', 'close');
+                }
+            } else {
+                if (!tutorialSidebarDone1) {
+                    if (isMobile()) {
+                        openSidebar().then(() => {
+                            startIntro();
+                        });
+                    } else {
+                        startIntro();
+                    }
+                }
+
+                function startIntro() {
+                    introJs()
+                        .setOptions({
+                            showProgress: true,
+                            showBullets: true,
+                            exitOnOverlayClick: false,
+                            tooltipPosition: 'auto',
+                            highlightClass: 'introjs-highlight'
+                        })
+                        .onbeforechange(function(targetElement) {
+                            const step = parseInt(targetElement.getAttribute('data-step'), 10);
+                            if (step === 9) {
+                                closeSidebar();
+                                // Optional: Add a slight delay if sidebar has a transition
+                                //setTimeout(() => {}, 900); // Adjust time as needed
+                            }
+                        })
+                        .oncomplete(function() {
+                            localStorage.setItem('tutorialSidebarDone', true);
+                            // Optional: Ensure sidebar remains closed after tutorial
+                            if (isMobile()) {
+                                closeSidebar();
+                            }
+                        })
+                        .onexit(function() {
+                            localStorage.setItem('tutorialSidebarDone', true);
+                            // Optional: Ensure sidebar remains closed if tutorial is skipped
+                            if (isMobile()) {
+                                closeSidebar();
+                            }
+                        })
+                        .start();
+                }
+
+                function isMobile() {
+                    return window.matchMedia("(max-width: 998px)").matches;
+                }
+
+                function openSidebar() {
+                    document.documentElement.setAttribute('data-toggled', 'open');
+                    return new Promise((resolve) => {
+                        // Adjust the timeout duration based on your sidebar's transition time
+                        setTimeout(resolve, 500);
+                    });
+                }
+
+                function closeSidebar() {
+                    document.documentElement.setAttribute('data-toggled', 'close');
                 }
             }
 
-            function startIntro() {
-                introJs()
-                    .setOptions({
-                        showProgress: true,
-                        showBullets: true,
-                        exitOnOverlayClick: false,
-                        tooltipPosition: 'auto',
-                        highlightClass: 'introjs-highlight'
-                    })
-                    .onbeforechange(function(targetElement) {
-                        const step = parseInt(targetElement.getAttribute('data-step'), 10);
-                        if (step === 9) {
-                            closeSidebar();
-                            // Optional: Add a slight delay if sidebar has a transition
-                            //setTimeout(() => {}, 900); // Adjust time as needed
-                        }
-                    })
-                    .oncomplete(function() {
-                        localStorage.setItem('tutorialSidebarDoneYesSC', true);
-                        // Optional: Ensure sidebar remains closed after tutorial
-                        if (isMobile()) {
-                            closeSidebar();
-                        }
-                    })
-                    .onexit(function() {
-                        localStorage.setItem('tutorialSidebarDoneYesSC', true);
-                        // Optional: Ensure sidebar remains closed if tutorial is skipped
-                        if (isMobile()) {
-                            closeSidebar();
-                        }
-                    })
-                    .start();
-            }
-
-            function isMobile() {
-                return window.matchMedia("(max-width: 998px)").matches;
-            }
-
-            function openSidebar() {
-                document.documentElement.setAttribute('data-toggled', 'open');
-                return new Promise((resolve) => {
-                    // Adjust the timeout duration based on your sidebar's transition time
-                    setTimeout(resolve, 500);
-                });
-            }
-
-            function closeSidebar() {
-                document.documentElement.setAttribute('data-toggled', 'close');
-            }
         });
     </script>
+
 
 </body>
 

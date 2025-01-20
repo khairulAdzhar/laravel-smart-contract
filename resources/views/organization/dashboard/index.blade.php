@@ -64,7 +64,7 @@
                                                                 <div class="flex-fill">
                                                                     <div class="d-flex align-items-center">
                                                                         <div class="row">
-                                                                            <div class="col-md-10">
+                                                                            <div class="col-md-9">
                                                                                 <div class="mt-sm-0 mt-2">
                                                                                     <p class="mb-0 fs-14 fw-semibold">
                                                                                         {{ Auth::user()->name }}</p>
@@ -80,7 +80,7 @@
                                                                                         This is for ensure a
                                                                                         secure and seamless experience in
                                                                                         our system.
-                                                                                        Click start button to get started
+                                                                                        Click  Go To xBUG WEB button to get started ekyc at xBUG WEB Portal
                                                                                         and
                                                                                         enhance your security.</p>
                                                                                     <span
@@ -88,68 +88,15 @@
                                                                                             class="badge bg-danger-transparent fw-bold fs-12">Pending...</span></span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="text-end col-md-2">
-                                                                                <div class="ms-auto mt-4">
-                                                                                    <button type="button" id="startButton"
-                                                                                        class="btn btn-success btn-wave">
-                                                                                        <span id="StartText">Start</span>
-                                                                                        <img id="loadingGif" class="d-none"
-                                                                                            src="../../asset1/images/loading.gif"
-                                                                                            alt="Loading..." width="35"
-                                                                                            height="35">
-                                                                                        <span id="loadingText"
-                                                                                            class="d-none">Loading...</span>
-                                                                                    </button>
-                                                                                </div>
+                                                                            <div class="text-end col-md-3">
+                                                                                <button 
+                                                                                onclick="window.location.href='{{ env('XBUG_URL') }}/organization/dashboard'" 
+                                                                                class="btn btn-success">
+                                                                                Go To xBUG WEB
+                                                                            </button>
+                                                                            
                                                                             </div>
-                                                                            <div class="modal fade" id="qrModal"
-                                                                                data-bs-backdrop="static"
-                                                                                data-bs-keyboard="false" tabindex="-1"
-                                                                                aria-labelledby="qrModalLabel"
-                                                                                aria-hidden="true">
-                                                                                <div class="modal-dialog">
-                                                                                    <div class="modal-content">
-                                                                                        <div class="modal-header">
-                                                                                            <h6 class="modal-title"
-                                                                                                id="qrModalLabel">
-                                                                                                e-KYC Generated Code
-                                                                                            </h6>
-                                                                                            <button type="button"
-                                                                                                class="btn-close"
-                                                                                                data-bs-dismiss="modal"
-                                                                                                aria-label="Close"></button>
-                                                                                        </div>
-                                                                                        <div
-                                                                                            class="modal-body d-flex align-items-center justify-content-center p-3">
-                                                                                            <div class="row ">
-                                                                                                <div class="col-md-6 ">
-                                                                                                    <div id="qrcode"
-                                                                                                        class="w-100 text-center d-flex align-items-center justify-content-center">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div
-                                                                                                    class="col-md-6 d-flex align-items-center justify-content-center">
-                                                                                                    <span
-                                                                                                        class="text-muted">Scan
-                                                                                                        Qr Code using your
-                                                                                                        mobile phone device
-                                                                                                        for continue the
-                                                                                                        e-KYC verification
-                                                                                                        process</span>
-                                                                                                </div>
-                                                                                            </div>
-
-
-                                                                                        </div>
-                                                                                        <div class="modal-footer">
-                                                                                            <button type="button"
-                                                                                                class="btn btn-danger"
-                                                                                                data-bs-dismiss="modal">Close</button>
-
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                                       
                                                                         </div>
                                                                     </div>
                                                                 </div>
