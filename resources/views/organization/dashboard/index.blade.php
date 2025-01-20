@@ -2,9 +2,7 @@
 @section('container')
     <!-- Start::app-content -->
     <div class="main-content app-content">
-        <div class="container"
-            data-intro="This is your main dashboard, here you can see all the important information about your organization"
-            data-step="18">
+        <div class="container">
             <!-- Page Header -->
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                 <h1 class="page-title fw-semibold fs-18 mb-0">xBUG Blockchain Main Dashboard</h1>
@@ -172,15 +170,11 @@
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="card custom-card"
-                                    data-intro="Welcome to the xBUG Blockchain Dashboard! This is the main sidebar where you can navigate and monitor your blockchain smart contract activities."
-                                    data-step="18">
+                                <div class="card custom-card">
                                     <div class="card-body p-0">
                                         <div class="row g-0">
                                             <p class="text-primary m-3">Blockchain Smart Contract</p>
-                                            <div class="col-xl-3 border-end border-inline-end-dashed"
-                                                data-intro="This section shows the number of approved smart contracts that are ready to be deployed to the blockchain."
-                                                data-step="19">
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
                                                 <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                     <div class="me-3 lh-1">
                                                         <span class="avatar avatar-md avatar-rounded bg-primary shadow-sm">
@@ -193,9 +187,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xl-3 border-end border-inline-end-dashed"
-                                                data-intro="This section displays the total number of smart contract requests submitted for approval."
-                                                data-step="20">
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
                                                 <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                     <div class="me-3 lh-1">
                                                         <span class="avatar avatar-md avatar-rounded bg-light shadow-sm">
@@ -208,9 +200,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xl-3 border-end border-inline-end-dashed"
-                                                data-intro="This section shows the total number of successfully deployed smart contracts on the blockchain."
-                                                data-step="21">
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
                                                 <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                     <div class="me-3 lh-1">
                                                         <span class="avatar avatar-md avatar-rounded bg-success shadow-sm">
@@ -223,9 +213,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xl-3"
-                                                data-intro="This section shows the total number of smart contracts that failed to deploy. Review these to identify and fix issues."
-                                                data-step="22">
+                                            <div class="col-xl-3">
                                                 <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                     <div class="me-3 lh-1">
                                                         <span class="avatar avatar-md avatar-rounded bg-danger shadow-sm">
