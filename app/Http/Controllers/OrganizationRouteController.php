@@ -12,17 +12,44 @@ class OrganizationRouteController extends Controller
 
     public function showDashboard(Request $request)
     {
+        $user = Auth::user();
+
+        // Konversi role menjadi array
+        $roles = json_decode($user->role, true);
+
+        // Pastikan role berhasil didecode menjadi array
+        if (!is_array($roles)) {
+            $roles = []; // Default ke array kosong jika role tidak valid
+        }
+
+        // Hitung jumlah konten yang disetujui
         $approvedContents = DB::table('contents')
-            ->where('user_id', Auth::user()->id)
+            ->when(!in_array(1, $roles), function ($query) use ($user) {
+                // Jika bukan admin, filter berdasarkan user_id
+                return $query->where('user_id', $user->id);
+            })
             ->where('reason_phrase', 'APPROVED')
             ->count();
 
+        // Hitung status smart_contract berdasarkan status_contract
         $smart_contract = DB::table('smart_contract')
             ->select('status_contract', DB::raw('COUNT(*) as count'))
-            ->where('user_id', Auth::user()->id)
+            ->when(!in_array(1, $roles), function ($query) use ($user) {
+                // Jika bukan admin, filter berdasarkan user_id
+                return $query->where('user_id', $user->id);
+            })
             ->groupBy('status_contract')
             ->get();
-        $totalSC = DB::table('smart_contract')->count();
+
+        // Hitung total semua smart_contract
+        $totalSC = DB::table('smart_contract')
+            ->when(!in_array(1, $roles), function ($query) use ($user) {
+                // Jika bukan admin, filter berdasarkan user_id
+                return $query->where('user_id', $user->id);
+            })
+            ->count();
+
+        // Ambil jumlah approved dan rejected smart_contract
         $approvedCountSC = $smart_contract->where('status_contract', 1)->first()->count ?? 0;
         $rejectedCountSC = $smart_contract->where('status_contract', 0)->first()->count ?? 0;
 
@@ -34,8 +61,13 @@ class OrganizationRouteController extends Controller
         ]);
     }
 
+
+
     public function showNotificationOrg(Request $request)
     {
+        $user = Auth::user();
+        $roles = json_decode($user->role, true);
+        // Ambil data log email
         $logs = DB::table('email_logs')
             ->select([
                 'id',
@@ -47,10 +79,14 @@ class OrganizationRouteController extends Controller
                 'response_data',
                 'created_at'
             ])
-            ->where('recipient_email', Auth::user()->email)
+            ->when(!in_array(1, json_decode($user->role, true) ?? []), function ($query) use ($user) {
+                // Jika bukan admin, filter berdasarkan email pengguna
+                return $query->where('recipient_email', $user->email);
+            })
             ->whereIn('email_type', ['SMART CONTRACT'])
             ->orderBy('id', 'desc')
             ->get();
+
         if ($request->ajax()) {
 
             $table = DataTables::of($logs)->addIndexColumn();

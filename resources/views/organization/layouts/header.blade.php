@@ -58,11 +58,11 @@
                                     <div>
                                         <span class="mb-0 fw-semibold p-2">
                                             <a
-                                                href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}">xBUG WEB</a>
+                                                href="{{ env('XBUG_URL')}}/login">xBUG WEB</a>
                                         </span>
                                     </div>
                                     <div>
-                                        <a  href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}"
+                                        <a  href="{{ env('XBUG_URL')}}/login"
                                             class="min-w-fit-content text-muted me-1 dropdown-item-close1">
                                             <i class="bx bx-right-arrow-alt fs-22"></i>
                                         </a>
@@ -120,7 +120,9 @@
                         <div class="d-sm-block d-none">
                             <p class="fw-bold mb-0 lh-1">
                                 {{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</p>
-                            <span class="op-7 fw-semibold d-block fs-11">Organization</span>
+                                <span class="op-7 fw-semibold d-block fs-11">
+                                    {{ in_array(1, json_decode(Auth::user()->role, true) ?? []) ? 'Admin' : (in_array(2, json_decode(Auth::user()->role, true) ?? []) ? 'Organization' : 'User') }}
+                                </span>
                         </div>
                     </div>
                 </a>

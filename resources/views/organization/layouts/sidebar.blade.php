@@ -68,7 +68,7 @@
                         <!-- Child Menu Activity -->
                         <ul class="slide-menu child1">
                             <li class="slide">
-                                <a href="{{ route('showNotificationOrg') }}" class="side-menu__item">Your
+                                <a href="{{ route('showNotificationOrg') }}" class="side-menu__item">
                                     Notifications</a>
                             </li>
                         </ul>

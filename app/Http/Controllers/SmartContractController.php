@@ -15,11 +15,16 @@ class SmartContractController extends Controller
     public function showContentBlockchainOrg(Request $request)
     {
         $user = Auth::user();
-        $user_data = DB::table('contents')->where('contents.user_id', $user->id)
+        $roles = is_string($user->role) ? json_decode($user->role, true) : $user->role;
+        $user_data = DB::table('contents')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->leftJoin('smart_contract', 'contents.id', '=', 'smart_contract.content_id')
             ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
             ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
+            ->when(!is_array($roles) || !in_array(1, $roles), function ($query) use ($user) {
+                // Jika bukan admin, tambahkan where untuk user_id
+                return $query->where('contents.user_id', $user->id);
+            })
             ->where('contents.reason_phrase', 'APPROVED')
             ->select(
                 'contents.id',
@@ -49,6 +54,7 @@ class SmartContractController extends Controller
             )
             ->orderBy('smart_contract.created_at', 'desc')
             ->get();
+
 
         if ($request->ajax()) {
             $table = DataTables::of($user_data)->addIndexColumn();
@@ -292,7 +298,12 @@ class SmartContractController extends Controller
             ]);
 
             // Contoh: asumsikan user_id = 1 (atau Anda bisa cari userId dari Auth)
-            $userId =  Auth::user()->id;
+            $userId = DB::table('contents')
+            ->join('users', 'contents.user_id', '=', 'users.id')
+            ->where('contents.id', $validated['content_id'])
+            ->value('contents.user_id'); // Mengambil kolom user_id
+
+
 
             // Cek apakah ada data dengan content_id
             $existingSmartContract = DB::table('smart_contract')
@@ -357,16 +368,22 @@ class SmartContractController extends Controller
                 $status = $validated['status_contract'];
                 $rejection_reason = '';
                 $tx_hsh = $validated['tx_hash'];
-                $name = Auth::user()->name;
+                $user_details = DB::table('contents')
+                ->join('users', 'contents.user_id', '=', 'users.id')
+                ->where('contents.id', $validated['content_id'])
+                ->select('users.name', 'users.email') 
+                ->first(); 
+    
+                $name = $user_details->name;
                 $content_name = $validated['content_name'];
-                Mail::to(Auth::user()->email)->send(new SmartContractNotificationMail($status, $rejection_reason, $tx_hsh, $name, $content_name));
+                Mail::to($user_details->email)->send(new SmartContractNotificationMail($status, $rejection_reason, $tx_hsh, $name, $content_name));
                 $logData = [
                     'email_type' => 'SMART CONTRACT',
-                    'recipient_email' => Auth::user()->email,
+                    'recipient_email' => $user_details->email,
                     'from_email' => 'blockchain@xbug.online',
-                    'name' => Auth::user()->name,
+                    'name' => $user_details->name,
                     'status' => 'SUCCESS',
-                    'response_data' => 'MESSAGE SUCCESS SEND: TRANSACTION HASH - '.$validated['tx_hash'],
+                    'response_data' => 'MESSAGE SUCCESS SEND: TRANSACTION HASH - ' . $validated['tx_hash'],
                     'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 ];
