@@ -9,8 +9,8 @@ const networks = [arbitrum, mainnet,sepolia]
 const metadata = {
   name: 'My Laravel App',
   description: 'Laravel WalletConnect Integration',
-  url: 'https://my-laravel-app.com',
-  icons: ['https://my-laravel-app.com/icon.png']
+  url: 'https://blockchain.xbug.online',
+  icons: ['https://xbug.online/assets/images/logo.png']
 }
 
 createAppKit({
