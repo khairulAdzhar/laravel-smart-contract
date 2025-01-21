@@ -55,6 +55,11 @@
     <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
 
 
+    {{-- animation for swal --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
+
 
     @yield('styles')
 
