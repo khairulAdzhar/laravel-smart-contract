@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::redirect('/', env('XBUG_URL').'/login')->name('login');
 Route::get('/smart-contract-redirect', [OrganizationRouteController::class, 'redirectSmartContractOrg'])->name('redirectSmartContractOrg');
 
